@@ -27,6 +27,9 @@ void Manager::setup(int width_, int height_)
 
 void Manager::update()
 {
+	assert(frameBuffer.isAllocated());
+	assert(layerFrameBuffer.isAllocated());
+
 	for (int i = 0; i < layers.size(); i++)
 	{
 		layers[i]->layerUpdate();
@@ -43,6 +46,8 @@ void Manager::update()
 			ofColor background = ofGetStyle().bgColor;
 			ofClear(background.r, background.g, background.b, 0);
 		}
+		
+		frameBuffer.end();
 		
 		vector<Layer*>::reverse_iterator it = layers.rbegin();
 		while (it != layers.rend())
@@ -66,7 +71,6 @@ void Manager::update()
 					ofClear(layer->background);
 					ofSetColor(255, 255);
 					
-					ofEnableBlendMode(layer->getBlendMode());
 					layer->draw();
 					
 					glPopMatrix();
@@ -79,12 +83,20 @@ void Manager::update()
 				// render to main fbo
 				glPushAttrib(GL_ALL_ATTRIB_BITS);
 				{
+					frameBuffer.begin();
+					
+					ofPushStyle();
+					
 					ofDisableDepthTest();
 					ofSetColor(255, layer->alpha * 255);
 					
-					ofEnableBlendMode(layer->getBlendMode());
+					ofEnableBlendMode(layer->getLayerBlendMode());
 					layerFrameBuffer.draw(0, 0);
 					ofDisableBlendMode();
+					
+					ofPopStyle();
+					
+					frameBuffer.end();
 				}
 				glPopAttrib();
 			}
@@ -92,7 +104,7 @@ void Manager::update()
 			it++;
 		}
 		
-		frameBuffer.end();
+		
 	}
 	ofPopStyle();
 }

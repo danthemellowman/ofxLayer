@@ -45,8 +45,8 @@ public:
 	void moveUp();
 	void moveDown();
 
-	ofBlendMode getBlendMode() { return blendMode; }
-	void setBlendMode(ofBlendMode mode) { blendMode = mode; }
+	ofBlendMode getLayerBlendMode() { return blendMode; }
+	void setLayerBlendMode(ofBlendMode mode) { blendMode = mode; }
 
 protected:
 	void ofBackground(int r, int g, int b, int a = 255);
@@ -56,10 +56,6 @@ protected:
 	inline int ofGetWidth() { return rect.width; }
 	inline int ofGetHeight() { return rect.height; }
 	
-	void ofEnableBlendMode(ofBlendMode mode) { setBlendMode(mode); }
-	void ofEnableAlphaBlending() { setBlendMode(OF_BLENDMODE_ALPHA); }
-	void ofDisableAlphaBlending() { setBlendMode(OF_BLENDMODE_DISABLED); }
-
 protected:
 	Layer();
 	virtual ~Layer();
