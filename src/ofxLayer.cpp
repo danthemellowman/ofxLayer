@@ -13,7 +13,7 @@ Layer::~Layer() {}
 
 void Layer::layerSetup(int width, int height)
 {
-	float* bg = ofBgColorPtr();
+	ofColor bg = ofGetBackgroundColor();
 	background.set(bg[0] * 255, bg[1] * 255, bg[2] * 255, 0);
 	rect.width = width;
 	rect.height = height;

@@ -18,7 +18,7 @@ void Manager::setup(int width_, int height_)
 	s.width = width;
 	s.height = height;
 	s.useDepth = true;
-	s.useStencil = true;
+	s.useStencil = false;
 	s.internalformat = GL_RGBA;
 
 	frameBuffer.allocate(s);
@@ -57,12 +57,12 @@ void Manager::update()
 			if (layer->isVisible())
 			{
 				// render to layer fbo
-				glPushAttrib(GL_ALL_ATTRIB_BITS);
+                ofPushStyle();
 				{
 					layerFrameBuffer.begin();
 					
 					ofPushStyle();
-					glPushMatrix();
+					ofPushMatrix();
 					
 					ofDisableSmoothing();
 					ofEnableDepthTest();
@@ -73,15 +73,15 @@ void Manager::update()
 					
 					layer->draw();
 					
-					glPopMatrix();
+                    ofPopMatrix();
 					ofPopStyle();
 					
 					layerFrameBuffer.end();
 				}
-				glPopAttrib();
+				ofPopStyle();
 				
 				// render to main fbo
-				glPushAttrib(GL_ALL_ATTRIB_BITS);
+                ofPushStyle();
 				{
 					frameBuffer.begin();
 					
@@ -98,7 +98,7 @@ void Manager::update()
 					
 					frameBuffer.end();
 				}
-				glPopAttrib();
+				ofPopStyle();
 			}
 			
 			it++;
@@ -114,12 +114,30 @@ void Manager::draw()
 	frameBuffer.draw(0, 0);
 }
 
+void Manager::addLayer(Layer * layer){
+    layers.push_back(layer);
+    layer_class_name_map[layer->getClassName()] = layer;
+    layer_class_id_map[layer->getClassID()] = layer;
+}
+
+void Manager::removeLayer(Layer* layer){
+    assert(layer);
+    
+    vector<Layer*>::iterator it = find(layers.begin(), layers.end(), layer);
+    if (it != layers.end())
+    {
+        layer_class_name_map.erase(layer->getClassName());
+        layer_class_id_map.erase(layer->getClassID());
+        layers.erase(it);
+    }
+}
+
 void Manager::deleteLayer(Layer* layer)
 {
 	assert(layer);
 
 	vector<Layer*>::iterator it = find(layers.begin(), layers.end(), layer);
-	if (it == layers.end())
+	if (it != layers.end())
 	{
 		layer_class_name_map.erase(layer->getClassName());
 		layer_class_id_map.erase(layer->getClassID());

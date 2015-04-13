@@ -79,7 +79,7 @@ public:
 		ofSetFrameRate(60);
 		ofSetVerticalSync(true);
 		
-		ofBackground(30);
+		ofBackground(4, 5, 6);
 		
 		mng.setup(1280, 720);
 		

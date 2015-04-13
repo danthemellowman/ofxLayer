@@ -22,7 +22,9 @@ public:
 	void setup(int width = ::ofGetWidth(), int height = ::ofGetHeight());
 	void update();
 	void draw();
-
+    void removeLayer(Layer* layer);
+    void addLayer(Layer * layer);
+    
 	template <typename T>
 	T* createLayer(float defalut_alpha = 0)
 	{
